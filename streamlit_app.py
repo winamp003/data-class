@@ -1,5 +1,18 @@
 import streamlit as st
 from PIL import Image
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import seaborn as sns
+import plotly.express as px
+import pandas as pd
+import numpy as np
+
+# 한글 폰트 설정
+font_path = 'fonts/NotoSansKR-Bold.ttf'
+font_prop = fm.FontProperties(fname=font_path)
+fm.fontManager.addfont(font_path)  # 폰트 등록
+plt.rcParams['font.family'] = 'Noto Sans KR'
+plt.rcParams['axes.unicode_minus'] = False  # 마이너스 기호 깨짐 방지
 
 st.set_page_config(page_title="김요한 자기소개", layout="wide")
 
@@ -30,12 +43,16 @@ st.markdown("""
 st.markdown("# 👋 안녕하세요, 김요한입니다")
 st.markdown("### 서울공업고등학교 전기교과 교사 | 교육과 자격증을 연결하는 전문가")
 
-# 프로필 섹션 - 가운데 정렬
-col1, col2, col3 = st.columns([1, 2, 1])
+# 프로필 사진 중앙 배치
+col1, col2, col3 = st.columns([1, 1, 1])
 with col2:
     img = Image.open("20240424_221209.jpg")
     rotated = img.rotate(-90, expand=True)
     st.image(rotated, width=180, caption="김요한의 반려견 김호빵!")
+
+# 핵심 역량 섹션 - 가운데 정렬
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
     st.write("### 핵심 역량")
     st.write("- **자격증 교육** 설계 및 운영 (전기기능사, 전기기사, 전기기능장)")
     st.write("- **신재생에너지 융합 수업** 개발 및 학생 맞춤 교육")
@@ -58,13 +75,43 @@ with col2:
 
 st.write("---")
 
-# 기술 스택 섹션 - 가운데 정렬
+# 데이터 시각화 예제 섹션 - 가운데 정렬
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.subheader("🛠️ 기술 스택 및 자격증")
-    st.image("https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=150&h=100&fit=crop", caption="자격증 교육")
-    st.write("- 전기기능사\n- 전기기사\n- 전기기능장")
-    st.progress(100)
+    st.subheader("📊 데이터 시각화 예제")
+
+    # Matplotlib 예제
+    st.write("#### Matplotlib: 학생 성적 추이")
+    months = ['1월', '2월', '3월', '4월', '5월', '6월']
+    scores = np.random.randint(70, 100, 6)
+    fig, ax = plt.subplots()
+    ax.plot(months, scores, marker='o')
+    ax.set_title('학생 평균 성적 추이', fontproperties=font_prop)
+    ax.set_xlabel('월', fontproperties=font_prop)
+    ax.set_ylabel('성적', fontproperties=font_prop)
+    st.pyplot(fig)
+
+    # Seaborn 예제
+    st.write("#### Seaborn: 자격증 취득률 분포")
+    data = pd.DataFrame({
+        '자격증': ['전기기능사', '전기기사', '전기기능장'] * 20,
+        '취득률': np.random.normal(85, 10, 60)
+    })
+    fig, ax = plt.subplots()
+    sns.boxplot(x='자격증', y='취득률', data=data, ax=ax)
+    ax.set_title('자격증별 취득률 분포', fontproperties=font_prop)
+    ax.set_xlabel('자격증', fontproperties=font_prop)
+    ax.set_ylabel('취득률', fontproperties=font_prop)
+    st.pyplot(fig)
+
+    # Plotly 예제
+    st.write("#### Plotly: 신재생에너지 발전량")
+    energy_data = pd.DataFrame({
+        '에너지원': ['태양광', '풍력', '수력', '지열'],
+        '발전량(MW)': np.random.randint(100, 500, 4)
+    })
+    fig = px.bar(energy_data, x='에너지원', y='발전량(MW)', title='신재생에너지 발전량 비교')
+    st.plotly_chart(fig)
 
 st.write("---")
 
